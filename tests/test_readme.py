@@ -24,7 +24,7 @@ def test_readme_2():
     import esm
 
     # Load ESM-2 model
-    model, alphabet = esm.pretrained.esm2_t33_650M_UR50D()
+    model, alphabet = esm.pretrained.esm2_t6_8M_UR50D()
     batch_converter = alphabet.get_batch_converter()
     model.eval()  # disables dropout for deterministic results
 
@@ -39,9 +39,10 @@ def test_readme_2():
     batch_lens = (batch_tokens != alphabet.padding_idx).sum(1)
 
     # Extract per-residue representations (on CPU)
+    embed_layer = 6  # last layer value for embedding
     with torch.no_grad():
-        results = model(batch_tokens, repr_layers=[33], return_contacts=True)
-    token_representations = results["representations"][33]
+        results = model(batch_tokens, repr_layers=[embed_layer], return_contacts=True)
+    token_representations = results["representations"][embed_layer]
 
     # Generate per-sequence representations via averaging
     # NOTE: token 0 is always a beginning-of-sequence token, so the first residue is token 1.
